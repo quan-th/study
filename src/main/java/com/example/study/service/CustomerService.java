@@ -2,6 +2,7 @@ package com.example.study.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -12,10 +13,10 @@ import javax.validation.Validator;
 public class CustomerService {
 
     @Autowired
-    CustomerRepository customerRepository;
+    private CustomerRepository customerRepository;
 
     @Autowired
-    Validator validator;
+    private Validator validator;
 
     @Transactional
     public Customer create(Customer customer, boolean rollbackFlag){

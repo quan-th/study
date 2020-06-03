@@ -21,8 +21,8 @@ dependencies {
 	compile group: 'org.hibernate', name: 'hibernate-gradle-plugin', version: '5.4.17.Final'
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
 	compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.3.0.RELEASE'
-	// https://mvnrepository.com/artifact/javax.validation/validation-api
-	compile group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA'
+	// https://mvnrepository.com/artifact/org.hibernate/hibernate-validator
+	compile group: 'org.hibernate', name: 'hibernate-validator', version: '4.2.0.Final'
 	// https://mvnrepository.com/artifact/com.fasterxml.uuid/java-uuid-generator
 	compile group: 'com.fasterxml.uuid', name: 'java-uuid-generator', version: '3.1.0'
 	// https://mvnrepository.com/artifact/org.hibernate/hibernate-java8
