@@ -1,11 +1,16 @@
 package com.example.study.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
-public class HttpBadRequestException extends HttpStatusCodeException {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class HttpBadRequestException extends RuntimeException {
 
-    public HttpBadRequestException(String statusText) {
-        super(HttpStatus.BAD_REQUEST, statusText);
+    String messageError;
+
+    public HttpBadRequestException(String messageError) {
+        this.messageError = messageError;
     }
 }

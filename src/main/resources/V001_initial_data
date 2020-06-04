@@ -6,5 +6,4 @@ create table Customer
   sex VARCHAR(10),
   age int,
   address VARCHAR(10),
-  money BIGINT(11),
 );

@@ -2,7 +2,6 @@ package com.example.study.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.math.BigDecimal;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Data
@@ -45,10 +44,6 @@ public class Customer {
     @JsonProperty("address")
     @Column(name = "address")
     private String address;
-
-    @JsonProperty("money")
-    @Column(name = "money")
-    private BigDecimal money;
 
     public Customer(String customerCode){
         this.setCustomerId(UUID.randomUUID().toString());

@@ -22,7 +22,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
 	compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.3.0.RELEASE'
 	// https://mvnrepository.com/artifact/org.hibernate/hibernate-validator
-	compile group: 'org.hibernate', name: 'hibernate-validator', version: '4.2.0.Final'
+	compile group: 'org.hibernate', name: 'hibernate-validator', version: '6.0.13.Final'
 	// https://mvnrepository.com/artifact/com.fasterxml.uuid/java-uuid-generator
 	compile group: 'com.fasterxml.uuid', name: 'java-uuid-generator', version: '3.1.0'
 	// https://mvnrepository.com/artifact/org.hibernate/hibernate-java8
@@ -41,6 +41,9 @@ dependencies {
 	compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.3.0.RELEASE'
 	// https://mvnrepository.com/artifact/org.springframework/spring-orm
 	compile group: 'org.springframework', name: 'spring-orm', version: '5.2.6.RELEASE'
+	// https://mvnrepository.com/artifact/org.testinfected.hamcrest-matchers/core-matchers
+	compile group: 'org.testinfected.hamcrest-matchers', name: 'core-matchers', version: '1.5'
+
 	compileOnly 'org.projectlombok:lombok:1.18.12'
 	annotationProcessor 'org.projectlombok:lombok:1.18.12'
 	testCompileOnly 'org.projectlombok:lombok:1.18.12'

@@ -13,18 +13,16 @@ public class CustomerFixtures {
         customer.setSex("Male");
         customer.setAge(24);
         customer.setAddress("Address");
-        customer.setMoney(BigDecimal.valueOf(1000));
         return customer;
     }
 
     public static String createJson(String customerCode){
         String json = "{"
-                + "`customer_code`:" + customerCode + ","
-                + "`customer_name`:CustomerName,"
-                + "`sex`:Male,"
-                + "`age`:24,"
-                + "`address`:`Address`,"
-                + "`money`:1000,"
+                + "'customer_code':'" + customerCode + "',"
+                + "'customer_name':'CustomerName',"
+                + "'sex':'Male',"
+                + "'age':24,"
+                + "'address':'Address'"
                 + "}";
         return json;
     }

@@ -5,6 +5,8 @@ import com.sun.istack.NotNull;
 import lombok.Data;
 import com.example.study.service.Customer;
 
+import java.math.BigDecimal;
+
 @Data
 public class RegisterCustomerRequest {
     @JsonProperty("customer_code")
@@ -22,6 +24,8 @@ public class RegisterCustomerRequest {
 
     @JsonProperty("address")
     private String address;
+
+    private boolean rollbackFlag;
 
     public Customer get(){
         Customer customer = new Customer();

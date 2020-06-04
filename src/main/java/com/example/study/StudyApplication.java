@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+public
 class StudyApplication {
 
 
