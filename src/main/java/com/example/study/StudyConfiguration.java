@@ -2,8 +2,10 @@ package com.example.study;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
@@ -11,6 +13,8 @@ import javax.sql.DataSource;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 @Configuration
@@ -51,5 +55,16 @@ public class StudyConfiguration {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         return validator;
+    }
+
+    @Bean(name = "mySqlDataSource")
+    @Primary
+    public DataSource mySqlDataSource()
+    {
+        DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
+        dataSourceBuilder.url("jdbc:mysql://localhost/study");
+        dataSourceBuilder.username("admin");
+        dataSourceBuilder.password("123456");
+        return dataSourceBuilder.build();
     }
 }

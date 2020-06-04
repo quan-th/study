@@ -1,6 +1,9 @@
-package com.example.study.service;
+package com.example.study.web;
 
 import static org.hamcrest.CoreMatchers.is;
+
+import com.example.study.service.Customer;
+import com.example.study.service.CustomerService;
 import com.example.study.web.CustomerController;
 import com.example.study.web.RegisterCustomerRequest;
 import com.example.study.web.RegisterCustomerRequestFixtures;

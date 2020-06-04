@@ -1,11 +1,10 @@
 package com.example.study.web;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sun.istack.NotNull;
 import lombok.Data;
 import com.example.study.service.Customer;
 
-import java.math.BigDecimal;
+import javax.validation.constraints.NotNull;
 
 @Data
 public class RegisterCustomerRequest {

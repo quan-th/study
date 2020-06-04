@@ -19,12 +19,11 @@ public class RegisterCustomerRequestFixtures {
 
     public static String createJson(String customerCode){
         String json = "{"
-                + "`customer_code`:" + customerCode + ","
-                + "`customer_name`:CustomerName,"
-                + "`sex`:Male,"
-                + "`age`:24,"
-                + "`address`:`Address`,"
-                + "`money`:1000,"
+                + "'customer_code':'" + customerCode + "',"
+                + "'customer_name':'CustomerName',"
+                + "'sex':'Male',"
+                + "'age':24,"
+                + "'address':'Address'"
                 + "}";
         return json;
     }

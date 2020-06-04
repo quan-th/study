@@ -43,6 +43,10 @@ dependencies {
 	compile group: 'org.springframework', name: 'spring-orm', version: '5.2.6.RELEASE'
 	// https://mvnrepository.com/artifact/org.testinfected.hamcrest-matchers/core-matchers
 	compile group: 'org.testinfected.hamcrest-matchers', name: 'core-matchers', version: '1.5'
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+	// https://mvnrepository.com/artifact/mysql/mysql-connector-java
+	compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.13'
 
 	compileOnly 'org.projectlombok:lombok:1.18.12'
 	annotationProcessor 'org.projectlombok:lombok:1.18.12'
