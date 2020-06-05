@@ -13,13 +13,13 @@ jobs:
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/postgres:9.4
-      - image: circleci/mysql:8.0.4
+      - image: circleci/mysql
         environment:
           MYSQL_HOST: 127.0.0.1
           MYSQL_ROOT_PASSWORD: 123456
           MYSQL_DATABASE: study
-          MYSQL_USER:root
-          MYSQL_PASSWORD:123456
+          MYSQL_USER: study
+          MYSQL_PASSWORD: 123456
     working_directory: ~/repo
 
     environment:
@@ -33,7 +33,7 @@ jobs:
       # Our primary container isn't MYSQL so run a sleep command until it's ready.
           name: Waiting for MySQL to be ready
           command: |
-            for i in `seq 1 10`;
+            for i in `seq 1 100`;
             do
               nc -z 127.0.0.1 3306 && echo Success && exit 0
               echo -n .
@@ -43,8 +43,10 @@ jobs:
       - run:
           name: Install MySQL CLI; Import dummy data; run an example query
           command: |
+            sudo apt-get update
+            sudo apt-get dist-upgrade
             sudo apt-get install default-mysql-client
-            mysql -h 127.0.0.1 -u root -p123456 study < study/src/main/resources/db/migration/*.sql
+            mysql -h 127.0.0.1 -u root -p123456 study < ~/src/main/resources/db/migration/V001_initial_data.sql
             mysql -h 127.0.0.1 -u root -p123456 --execute="SELECT * FROM study.customer"
 
       # Download and cache dependencies
