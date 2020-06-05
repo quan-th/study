@@ -1,6 +1,6 @@
 package com.example.study.service;
 
-import javassist.NotFoundException;
+import com.example.study.exception.NotFoundException;
 import org.hibernate.HibernateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -119,7 +119,7 @@ public class CustomerServiceTest {
      * Case: OK
      */
     @Test
-    public void testDelete() throws NotFoundException {
+    public void testDelete(){
         // setup
         String customerCode = "customerCode";
         Customer customer = CustomerFixtures.create(customerCode);
