@@ -5,4 +5,4 @@ rvm:
 services:
  - mysql
 
-before_script: ./tests/travis.sql
+before_script: ./test/travis.sql
