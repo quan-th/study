@@ -1,9 +1,9 @@
-create table Customer
+create table customer
 (
   customer_id VARCHAR(128) NOT NULL,
   customer_code VARCHAR(128) NOT NULL,
   customer_name VARCHAR(128),
   sex VARCHAR(10),
   age int,
-  address VARCHAR(10),
+  address VARCHAR(10)
 );

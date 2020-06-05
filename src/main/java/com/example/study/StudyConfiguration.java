@@ -2,6 +2,8 @@ package com.example.study;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,16 +15,15 @@ import javax.sql.DataSource;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
 
 @Configuration
+@EnableConfigurationProperties(JpaProperties.class)
 public class StudyConfiguration {
     @Autowired
     private Environment env;
 
-    @Bean(name = "sessionFactory")
+    @Bean(name = "entityManagerFactory")
     public SessionFactory getSessionFactory(DataSource dataSource) throws Exception {
         Properties properties = new Properties();
 
@@ -62,9 +63,10 @@ public class StudyConfiguration {
     public DataSource mySqlDataSource()
     {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.url("jdbc:mysql://localhost/study");
-        dataSourceBuilder.username("admin");
+        dataSourceBuilder.url("jdbc:mysql://localhost:3306/study");
+        dataSourceBuilder.username("root");
         dataSourceBuilder.password("123456");
+        dataSourceBuilder.driverClassName("com.mysql.cj.jdbc.Driver");
         return dataSourceBuilder.build();
     }
 }

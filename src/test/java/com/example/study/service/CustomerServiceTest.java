@@ -1,12 +1,11 @@
 package com.example.study.service;
 
+import javassist.NotFoundException;
 import org.hibernate.HibernateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.validation.ValidationException;
 import javax.validation.Validator;
@@ -20,7 +19,7 @@ import static org.mockito.Mockito.when;
 public class CustomerServiceTest {
 
     @Mock
-    CustomerRepository customerRepository;
+    CustomerRepositoryImpl customerRepositoryCustom;
 
     @Mock
     Validator validator;
@@ -30,7 +29,7 @@ public class CustomerServiceTest {
     @BeforeEach
     public void setUp(){
         MockitoAnnotations.initMocks(this);
-        sut = new CustomerService(customerRepository, validator);
+        sut = new CustomerService(customerRepositoryCustom, validator);
     }
 
     /**
@@ -73,7 +72,7 @@ public class CustomerServiceTest {
     public void testCreate_throwsHE(){
         // setup
         Customer customer = CustomerFixtures.create("customerCode");
-        doThrow(HibernateException.class).when(customerRepository).create(any(Customer.class));
+        doThrow(HibernateException.class).when(customerRepositoryCustom).create(any(Customer.class));
         // exercise
         Throwable thrown = catchThrowable(() -> sut.create(customer, true));
         // verify
@@ -113,5 +112,183 @@ public class CustomerServiceTest {
         Customer actual = sut.create(customer, false);
         // verify
         assertThat(actual).isEqualTo(customer);
+    }
+
+    /**
+     * Test Delete
+     * Case: OK
+     */
+    @Test
+    public void testDelete() throws NotFoundException {
+        // setup
+        String customerCode = "customerCode";
+        Customer customer = CustomerFixtures.create(customerCode);
+        when(customerRepositoryCustom.findCustomer(any())).thenReturn(customer);
+        // exercise
+        Customer actual = sut.deleteCustomer(customerCode, false);
+        // verify
+        assertThat(actual).isEqualTo(customer);
+    }
+
+    /**
+     * Test Delete
+     * Case: Throw NFE
+     * Input:
+     *    customerRepositoryCustom.findCustomer return null
+     * Output:
+     *    Throw NFE
+     */
+    @Test
+    public void testDelete_throwsNFE() {
+        // setup
+        String customerCode = "customerCode";
+        when(customerRepositoryCustom.findCustomer(any())).thenReturn(null);
+        // exercise
+        Throwable actual = catchThrowable(() -> sut.deleteCustomer(customerCode, false));
+        // verify
+        assertThat(actual)
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("Not exist");
+    }
+
+    /**
+     * Test Delete
+     * Case: Throw HibernateException
+     * Input:
+     *    customerRepositoryCustom.findCustomer throw HibernateException
+     * Output:
+     *    Throw HibernateException
+     */
+    @Test
+    public void testDelete_throwsHE() {
+        // setup
+        String customerCode = "customerCode";
+        doThrow(HibernateException.class).when(customerRepositoryCustom).findCustomer(any());
+        // exercise
+        Throwable actual = catchThrowable(() -> sut.deleteCustomer(customerCode, false));
+        // verify
+        assertThat(actual)
+                .isInstanceOf(HibernateException.class);
+    }
+
+    /**
+     * Test Delete
+     * Case: Throw IllegalArgumentException
+     * Input:
+     *    rollbackFlag = true
+     * Output:
+     *    Throw IllegalArgumentException
+     */
+    @Test
+    public void testDelete_throwsIAE() {
+        // setup
+        String customerCode = "customerCode";
+        when(customerRepositoryCustom.findCustomer(any())).thenReturn(CustomerFixtures.create(customerCode));
+        // exercise
+        Throwable actual = catchThrowable(() -> sut.deleteCustomer(customerCode, true));
+        // verify
+        assertThat(actual)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Test Rollback");
+    }
+
+    /**
+     * Test Upsert
+     * Case: Throw IllegalArgumentException
+     * Input:
+     *    validate throw IllegalArgumentException
+     * Output:
+     *    Throw IllegalArgumentException
+     */
+    @Test
+    public void testUpsert_throwsIAE1() {
+        // setup
+        String customerCode = "customerCode";
+        Customer customer = CustomerFixtures.create(customerCode);
+        doThrow(IllegalArgumentException.class).when(validator).validate(any(Customer.class));
+
+        // exercise
+        Throwable actual = catchThrowable(() -> sut.upsert(customerCode, customer, true));
+        // verify
+        assertThat(actual)
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    /**
+     * Test Upsert
+     * Case: Throw ValidationException
+     * Input:
+     *    validate throw ValidationException
+     * Output:
+     *    Throw ValidationException
+     */
+    @Test
+    public void testUpsert_throwsVE() {
+        // setup
+        String customerCode = "customerCode";
+        Customer customer = CustomerFixtures.create(customerCode);
+        doThrow(ValidationException.class).when(validator).validate(any(Customer.class));
+
+        // exercise
+        Throwable actual = catchThrowable(() -> sut.upsert(customerCode, customer, true));
+        // verify
+        assertThat(actual)
+                .isInstanceOf(ValidationException.class);
+    }
+
+    /**
+     * Test Upsert
+     * Case: Throw ValidationException
+     * Input:
+     *    validate throw ValidationException
+     * Output:
+     *    Throw ValidationException
+     */
+    @Test
+    public void testUpsert_throwsHE() {
+        // setup
+        String customerCode = "customerCode";
+        Customer customer = CustomerFixtures.create(customerCode);
+        doThrow(HibernateException.class).when(customerRepositoryCustom).create(any(Customer.class));
+
+        // exercise
+        Throwable actual = catchThrowable(() -> sut.upsert(customerCode, customer, true));
+        // verify
+        assertThat(actual)
+                .isInstanceOf(HibernateException.class);
+    }
+
+    /**
+     * Test Upsert
+     * Case: Throw IllegalArgumentException
+     * Input:
+     *    rollbackFlag = true
+     * Output:
+     *    Throw IllegalArgumentException
+     */
+    @Test
+    public void testUpsert_throwsIAE2() {
+        // setup
+        String customerCode = "customerCode";
+        Customer customer = CustomerFixtures.create(customerCode);
+        // exercise
+        Throwable actual = catchThrowable(() -> sut.upsert(customerCode, customer, true));
+        // verify
+        assertThat(actual)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Test Rollback");
+    }
+
+    /**
+     * Test Upsert
+     * Case: OK
+     */
+    @Test
+    public void testUpsert() {
+        // setup
+        String customerCode = "customerCode";
+        Customer customer = CustomerFixtures.create(customerCode);
+        // exercise
+        sut.upsert(customerCode, customer, false);
     }
 }

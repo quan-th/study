@@ -1,21 +1,6 @@
 package com.example.study;
 
-import com.example.study.service.CustomerRepository;
-import org.h2.jdbcx.JdbcDataSource;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import java.util.Properties;
 
 @Configuration
 public class TestStudyConfiguration {

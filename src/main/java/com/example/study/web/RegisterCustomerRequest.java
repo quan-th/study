@@ -1,10 +1,11 @@
 package com.example.study.web;
 
+import com.example.study.service.Customer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import com.example.study.service.Customer;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Data
 public class RegisterCustomerRequest {
@@ -19,7 +20,7 @@ public class RegisterCustomerRequest {
     private String sex;
 
     @JsonProperty("age")
-    private long age;
+    private Long age;
 
     @JsonProperty("address")
     private String address;
@@ -28,6 +29,7 @@ public class RegisterCustomerRequest {
 
     public Customer get(){
         Customer customer = new Customer();
+        customer.setCustomerId(UUID.randomUUID().toString());
         customer.setCustomerCode(this.customerCode);
         customer.setCustomerName(this.customerName);
         customer.setSex(this.sex);

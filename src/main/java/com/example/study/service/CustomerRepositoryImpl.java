@@ -1,0 +1,47 @@
+package com.example.study.service;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
+
+@Slf4j
+@AllArgsConstructor
+@Repository
+public class CustomerRepositoryImpl implements CustomerRepositoryCustom{
+
+    @Autowired
+    @Qualifier(value = "entityManagerFactory")
+    private SessionFactory sessionFactory;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    public void create(Customer customer){
+        try {
+            Session session = this.sessionFactory.getCurrentSession();
+            session.save(customer);
+        }catch (HibernateException e){
+            log.error("save failed!");
+            throw e;
+        }
+    }
+
+    public Customer findCustomer(String customerCode){
+        return customerRepository.findByCustomerCode(customerCode);
+    }
+
+    public void delete(Customer deleteCustomer) {
+        try {
+            Session session = this.sessionFactory.getCurrentSession();
+            session.delete(deleteCustomer);
+        }catch (HibernateException e){
+            log.error("Delete failed!");
+            throw e;
+        }
+    }
+}
