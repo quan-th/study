@@ -232,11 +232,6 @@ public class CustomerIntegrationTest {
                 .assertThat("$.customer_code", is(customerCode));
     }
 
-    @Test
-    public void testPut(){
-
-    }
-
     private String createCustomer(HttpHeaders headers) {
         String customerCode = randomCode();
         RegisterCustomerRequest registerCustomerRequest = RegisterCustomerRequestFixtures.create(customerCode);

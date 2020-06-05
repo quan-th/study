@@ -1,0 +1,20 @@
+CREATE DATABASE study;
+
+CREATE USER 'dev'@'localhost' IDENTIFIED BY 'dev';
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP ON *.* TO 'dev'@'localhost';
+
+CREATE DATABASE IF NOT EXISTS `study` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `study`;
+
+create table customer
+(
+  customer_id VARCHAR(128) NOT NULL,
+  customer_code VARCHAR(128) NOT NULL,
+  customer_name VARCHAR(128),
+  sex VARCHAR(10),
+  age int,
+  address VARCHAR(10)
+);
+
+ALTER TABLE `customer`
+  ADD PRIMARY KEY (`customer_id`);

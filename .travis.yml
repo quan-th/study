@@ -2,3 +2,7 @@ language: java
 rvm:
  - 2.2
  - jruby
+services:
+ - mysql
+
+before_script: ./tests/travis.sql
