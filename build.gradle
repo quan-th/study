@@ -54,12 +54,25 @@ dependencies {
 	testCompile group: 'com.jayway.jsonpath', name: 'json-path-assert', version: '2.2.0'
 	// https://mvnrepository.com/artifact/org.springframework.data/spring-data-jpa
 	compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.2.0.RELEASE'
+	// https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin
+	compile group: 'org.apache.maven.plugins', name: 'maven-compiler-plugin', version: '3.8.1'
 
 	compileOnly 'org.projectlombok:lombok:1.18.12'
 	annotationProcessor 'org.projectlombok:lombok:1.18.12'
 	testCompileOnly 'org.projectlombok:lombok:1.18.12'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
 	testImplementation 'org.junit.platform:junit-platform-commons:1.5.2'
+}
+
+// flyway
+task migrateDb(type: org.flywaydb.gradle.task.FlywayMigrateTask, group: "flyway", dependsOn: jar) {
+	doFirst {
+		System.setProperty("flyway.url", study.flyway.url)
+		System.setProperty("flyway.user", study.flyway.user)
+		if (study.flyway.password) {
+			System.setProperty("flyway.password", study.flyway.password)
+		}
+	}
 }
 
 test {

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Slf4j
 @AllArgsConstructor
 @Repository
@@ -25,6 +27,17 @@ public class CustomerRepositoryImpl implements CustomerRepositoryCustom{
         try {
             Session session = this.sessionFactory.getCurrentSession();
             session.save(customer);
+        }catch (HibernateException e){
+            log.error("save failed!");
+            throw e;
+        }
+    }
+
+    public void upsert(Customer customer, Customer customerToUpdate){
+        try {
+            Session session = this.sessionFactory.getCurrentSession();
+            Optional.ofNullable(customer).ifPresent(session::evict);
+            session.saveOrUpdate(customerToUpdate);
         }catch (HibernateException e){
             log.error("save failed!");
             throw e;

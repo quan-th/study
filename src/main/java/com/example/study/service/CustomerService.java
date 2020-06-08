@@ -40,7 +40,7 @@ public class CustomerService {
             customerToUpdate.setCustomerId(customer.getCustomerId());
         }
         validator.validate(customerToUpdate);
-        customerRepositoryCustom.create(customerToUpdate);
+        customerRepositoryCustom.upsert(customer, customerToUpdate);
         if(rollbackFlag){
             IllegalArgumentException e = new IllegalArgumentException("Test Rollback");
             log.error("Rollback transaction");

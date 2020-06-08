@@ -25,8 +25,6 @@ public class RegisterCustomerRequest {
     @JsonProperty("address")
     private String address;
 
-    private boolean rollbackFlag;
-
     public Customer get(){
         Customer customer = new Customer();
         customer.setCustomerId(UUID.randomUUID().toString());

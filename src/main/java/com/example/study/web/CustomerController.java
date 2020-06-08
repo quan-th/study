@@ -30,10 +30,11 @@ public class CustomerController {
 
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> registerCustomer(@Validated @RequestBody RegisterCustomerRequest request) {
+    public ResponseEntity<?> registerCustomer(@Validated @RequestBody RegisterCustomerRequest request
+    ,@RequestParam(name = "rollbackFlag", required = false) boolean rollbackFlag) {
         try {
             Customer customer = request.get();
-            Customer cart = customerService.create(customer, request.isRollbackFlag());
+            Customer cart = customerService.create(customer, rollbackFlag);
             return ResponseEntity.ok(cart);
         } catch (IllegalArgumentException | ValidationException e) {
             throw new HttpBadRequestException(e.getMessage());
@@ -66,10 +67,11 @@ public class CustomerController {
 
     @RequestMapping(value = "/{customerCode}", method = RequestMethod.PUT)
     public ResponseEntity<?> upsertCustomer(@Validated @RequestBody RegisterCustomerRequest request,
-                                            @PathVariable(name = "customerCode") String customerCode) {
+                                            @PathVariable(name = "customerCode") String customerCode,
+                                            @RequestParam(name = "rollbackFlag", required = false) boolean rollbackFlag) {
         try {
             Customer customer = request.get();
-            Customer cart = customerService.upsert(customerCode, customer, request.isRollbackFlag());
+            Customer cart = customerService.upsert(customerCode, customer, rollbackFlag);
             return ResponseEntity.ok(cart);
         } catch (IllegalArgumentException | ValidationException e) {
             throw new HttpBadRequestException(e.getMessage());
