@@ -1,3 +1,6 @@
+// -*- coding: utf-8; mode: groovy -*-
+import groovy.json.JsonSlurper
+
 plugins {
 	id 'org.springframework.boot' version '2.3.0.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
@@ -56,12 +59,24 @@ dependencies {
 	compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.2.0.RELEASE'
 	// https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin
 	compile group: 'org.apache.maven.plugins', name: 'maven-compiler-plugin', version: '3.8.1'
+	compile "com.netflix.spectator:spectator-ext-gc:0.105.0"
+	testCompile "org.flywaydb.flyway-test-extensions:flyway-dbunit-test:6.3.3"
+	// https://mvnrepository.com/artifact/org.flywaydb/flyway-core
+	compile group: 'org.flywaydb', name: 'flyway-core', version: '6.4.2'
 
 	compileOnly 'org.projectlombok:lombok:1.18.12'
 	annotationProcessor 'org.projectlombok:lombok:1.18.12'
 	testCompileOnly 'org.projectlombok:lombok:1.18.12'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
 	testImplementation 'org.junit.platform:junit-platform-commons:1.5.2'
+}
+
+// ======== Environment configuration ========
+if (hasProperty("env") == false) { ext.env = "personal" }
+ext.study = new JsonSlurper().parse file("env/${env}.json")
+
+ext {
+	pmdVersion = "6.21.0"
 }
 
 // flyway

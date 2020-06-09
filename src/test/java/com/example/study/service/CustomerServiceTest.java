@@ -249,10 +249,11 @@ public class CustomerServiceTest {
         // setup
         String customerCode = "customerCode";
         Customer customer = CustomerFixtures.create(customerCode);
-        doThrow(HibernateException.class).when(customerRepositoryCustom).create(any(Customer.class));
+        doThrow(HibernateException.class).when(customerRepositoryCustom)
+                .upsert(any(), any());
 
         // exercise
-        Throwable actual = catchThrowable(() -> sut.upsert(customerCode, customer, true));
+        Throwable actual = catchThrowable(() -> sut.upsert(customerCode, customer, false));
         // verify
         assertThat(actual)
                 .isInstanceOf(HibernateException.class);

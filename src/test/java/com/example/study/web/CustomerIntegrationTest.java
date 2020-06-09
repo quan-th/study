@@ -2,6 +2,9 @@ package com.example.study.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.test.annotation.FlywayTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +29,21 @@ public class CustomerIntegrationTest {
     @Autowired
     TestRestTemplate restTemplate;
 
+    @Autowired
+    Flyway flyway;
+
+    @BeforeEach
+    public void setUp(){
+        flyway.clean();
+        flyway.migrate();
+    }
+	
     /**
      * Test findCustomer
      * Case: OK
      */
     @Test
+    @FlywayTest
     public void testCreateCustomer() {
         // setup
         HttpHeaders headers = new HttpHeaders();
