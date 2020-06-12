@@ -1,5 +1,6 @@
 package com.example.study.service;
 
+import com.example.study.common.CommonTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -45,8 +46,13 @@ public class Customer {
     @Column(name = "address")
     private String address;
 
+    @JsonProperty("register_timestamp")
+    @Column(name = "register_timestamp")
+    private Long registerTimestamp;
+
     public Customer(String customerCode){
         this.setCustomerId(UUID.randomUUID().toString());
         this.setCustomerCode(customerCode);
+        this.setRegisterTimestamp(CommonTimestamp.currentTimestamp());
     }
 }

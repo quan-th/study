@@ -9,6 +9,8 @@ import com.example.study.service.CustomerService;
 import lombok.AllArgsConstructor;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.ValidationException;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -53,9 +56,11 @@ public class CustomerController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<?> findCustomer() {
-        Iterable<Customer> customer = Optional.ofNullable(customerService.findCustomer())
-                .orElseThrow(() -> new HttpNotFoundException("Cannot find customer"));
+    public ResponseEntity<?> findCustomer(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                          @RequestParam(name = "size", required = false, defaultValue = "100") int size) {
+        List<Customer> customer = Optional.ofNullable(customerService.findCustomer(PageRequest.of(page, size, Sort.by("registerTimestamp"))))
+                .orElseThrow(() -> new HttpNotFoundException("Cannot find customer"))
+                .getContent();
         return ResponseEntity.ok(customer);
     }
 

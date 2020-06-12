@@ -125,12 +125,70 @@ public class CustomerIntegrationTest {
      * Case: OK
      */
     @Test
-    public void testFindListCustomer() {
+    public void testFindListCustomer1() {
         // setup
         HttpHeaders headers = new HttpHeaders();
         String customerCode1 = createCustomer(headers);
         String customerCode2 = createCustomer(headers);
         String customerCode3 = createCustomer(headers);
+        String customerCode4 = createCustomer(headers);
+        String customerCode5 = createCustomer(headers);
+        String customerCode6 = createCustomer(headers);
+        String customerCode7 = createCustomer(headers);
+        String customerCode8 = createCustomer(headers);
+        String customerCode9 = createCustomer(headers);
+        // exercise
+        ResponseEntity<String> actual = restTemplate
+                .exchange("/customer?size=5&page=0", HttpMethod.GET, new HttpEntity<>(headers), String.class);
+        // verify
+        log.info("GET Customer response = {}", actual);
+        assertThat(actual.getStatusCode(), is(HttpStatus.OK));
+        with(actual.getBody())
+                .assertThat("$", hasSize(5))
+                .assertThat("$[0].customer_code", is(customerCode1))
+                .assertThat("$[1].customer_code", is(customerCode2))
+                .assertThat("$[2].customer_code", is(customerCode3))
+                .assertThat("$[3].customer_code", is(customerCode4))
+                .assertThat("$[4].customer_code", is(customerCode5));
+
+        actual = restTemplate
+                .exchange("/customer?size=5&page=1", HttpMethod.GET, new HttpEntity<>(headers), String.class);
+        // verify
+        log.info("GET Customer response = {}", actual);
+        assertThat(actual.getStatusCode(), is(HttpStatus.OK));
+        with(actual.getBody())
+                .assertThat("$", hasSize(4))
+                .assertThat("$[0].customer_code", is(customerCode6))
+                .assertThat("$[1].customer_code", is(customerCode7))
+                .assertThat("$[2].customer_code", is(customerCode8))
+                .assertThat("$[3].customer_code", is(customerCode9));
+
+        actual = restTemplate
+                .exchange("/customer", HttpMethod.GET, new HttpEntity<>(headers), String.class);
+        // verify
+        log.info("GET Customer response = {}", actual);
+        assertThat(actual.getStatusCode(), is(HttpStatus.OK));
+        with(actual.getBody())
+                .assertThat("$", hasSize(9))
+                .assertThat("$[0].customer_code", is(customerCode1))
+                .assertThat("$[1].customer_code", is(customerCode2))
+                .assertThat("$[2].customer_code", is(customerCode3))
+                .assertThat("$[3].customer_code", is(customerCode4))
+                .assertThat("$[4].customer_code", is(customerCode5))
+                .assertThat("$[5].customer_code", is(customerCode6))
+                .assertThat("$[6].customer_code", is(customerCode7))
+                .assertThat("$[7].customer_code", is(customerCode8))
+                .assertThat("$[8].customer_code", is(customerCode9));
+    }
+
+    /**
+     * Test findCustomer
+     * Case: OK
+     */
+    @Test
+    public void testFindListCustomer2() {
+        // setup
+        HttpHeaders headers = new HttpHeaders();
         // exercise
         ResponseEntity<String> actual = restTemplate
                 .exchange("/customer", HttpMethod.GET, new HttpEntity<>(headers), String.class);
@@ -138,10 +196,7 @@ public class CustomerIntegrationTest {
         log.info("GET Customer response = {}", actual);
         assertThat(actual.getStatusCode(), is(HttpStatus.OK));
         with(actual.getBody())
-                .assertThat("$", hasSize(3))
-                .assertThat("$[0].customer_code", is(customerCode1))
-                .assertThat("$[1].customer_code", is(customerCode2))
-                .assertThat("$[2].customer_code", is(customerCode3));
+                .assertThat("$", hasSize(0));
     }
 
     /**

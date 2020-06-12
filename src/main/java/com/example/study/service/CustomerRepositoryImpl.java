@@ -7,6 +7,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -58,8 +60,8 @@ public class CustomerRepositoryImpl implements CustomerRepositoryCustom{
         }
     }
 	
-    public Iterable<Customer> findCustomer(){
-        return customerRepository.findAll();
+    public Page<Customer> findCustomer(Pageable pageable){
+        return customerRepository.findAll(pageable);
     }
 
 }
