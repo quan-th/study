@@ -13,6 +13,7 @@ import javax.validation.Validator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -123,7 +124,7 @@ public class CustomerServiceTest {
         // setup
         String customerCode = "customerCode";
         Customer customer = CustomerFixtures.create(customerCode);
-        when(customerRepositoryCustom.findCustomer(any())).thenReturn(customer);
+        when(customerRepositoryCustom.findCustomer(anyString())).thenReturn(customer);
         // exercise
         Customer actual = sut.deleteCustomer(customerCode, false);
         // verify
@@ -142,7 +143,7 @@ public class CustomerServiceTest {
     public void testDelete_throwsNFE() {
         // setup
         String customerCode = "customerCode";
-        when(customerRepositoryCustom.findCustomer(any())).thenReturn(null);
+        when(customerRepositoryCustom.findCustomer(anyString())).thenReturn(null);
         // exercise
         Throwable actual = catchThrowable(() -> sut.deleteCustomer(customerCode, false));
         // verify
@@ -163,7 +164,7 @@ public class CustomerServiceTest {
     public void testDelete_throwsHE() {
         // setup
         String customerCode = "customerCode";
-        doThrow(HibernateException.class).when(customerRepositoryCustom).findCustomer(any());
+        doThrow(HibernateException.class).when(customerRepositoryCustom).findCustomer(anyString());
         // exercise
         Throwable actual = catchThrowable(() -> sut.deleteCustomer(customerCode, false));
         // verify
@@ -183,7 +184,7 @@ public class CustomerServiceTest {
     public void testDelete_throwsIAE() {
         // setup
         String customerCode = "customerCode";
-        when(customerRepositoryCustom.findCustomer(any())).thenReturn(CustomerFixtures.create(customerCode));
+        when(customerRepositoryCustom.findCustomer(anyString())).thenReturn(CustomerFixtures.create(customerCode));
         // exercise
         Throwable actual = catchThrowable(() -> sut.deleteCustomer(customerCode, true));
         // verify

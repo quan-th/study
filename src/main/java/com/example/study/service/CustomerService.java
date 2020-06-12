@@ -54,6 +54,11 @@ public class CustomerService {
         return customerRepositoryCustom.findCustomer(customerCode);
     }
 
+    @Transactional(readOnly = true)
+    public Iterable<Customer> findCustomer(){
+        return customerRepositoryCustom.findCustomer();
+    }
+
     @Transactional
     public Customer deleteCustomer(String customerCode, boolean rollbackFlag) {
         Customer deleteCustomer = Optional.ofNullable(customerRepositoryCustom.findCustomer(customerCode))

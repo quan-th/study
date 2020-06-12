@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/customer")
 @AllArgsConstructor
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class CustomerController {
     @Autowired
     CustomerService customerService;
@@ -47,6 +49,13 @@ public class CustomerController {
     public ResponseEntity<?> findCustomer(@PathVariable String customerCode) {
         Customer customer = Optional.ofNullable(customerService.findCustomer(customerCode))
                 .orElseThrow(() -> new HttpNotFoundException("Cannot find customer" + customerCode));
+        return ResponseEntity.ok(customer);
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<?> findCustomer() {
+        Iterable<Customer> customer = Optional.ofNullable(customerService.findCustomer())
+                .orElseThrow(() -> new HttpNotFoundException("Cannot find customer"));
         return ResponseEntity.ok(customer);
     }
 

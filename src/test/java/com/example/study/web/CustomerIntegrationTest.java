@@ -3,7 +3,6 @@ package com.example.study.web;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.flywaydb.core.Flyway;
-import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.jayway.jsonassert.JsonAssert.with;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -43,7 +43,6 @@ public class CustomerIntegrationTest {
      * Case: OK
      */
     @Test
-    @FlywayTest
     public void testCreateCustomer() {
         // setup
         HttpHeaders headers = new HttpHeaders();
@@ -119,6 +118,30 @@ public class CustomerIntegrationTest {
                 .assertThat("$.sex", is("Male"))
                 .assertThat("$.age", is(24))
                 .assertThat("$.address", is("Address"));
+    }
+
+    /**
+     * Test findCustomer
+     * Case: OK
+     */
+    @Test
+    public void testFindListCustomer() {
+        // setup
+        HttpHeaders headers = new HttpHeaders();
+        String customerCode1 = createCustomer(headers);
+        String customerCode2 = createCustomer(headers);
+        String customerCode3 = createCustomer(headers);
+        // exercise
+        ResponseEntity<String> actual = restTemplate
+                .exchange("/customer", HttpMethod.GET, new HttpEntity<>(headers), String.class);
+        // verify
+        log.info("GET Customer response = {}", actual);
+        assertThat(actual.getStatusCode(), is(HttpStatus.OK));
+        with(actual.getBody())
+                .assertThat("$", hasSize(3))
+                .assertThat("$[0].customer_code", is(customerCode1))
+                .assertThat("$[1].customer_code", is(customerCode2))
+                .assertThat("$[2].customer_code", is(customerCode3));
     }
 
     /**

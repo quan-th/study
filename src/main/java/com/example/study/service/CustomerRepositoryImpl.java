@@ -57,4 +57,9 @@ public class CustomerRepositoryImpl implements CustomerRepositoryCustom{
             throw e;
         }
     }
+	
+    public Iterable<Customer> findCustomer(){
+        return customerRepository.findAll();
+    }
+
 }
