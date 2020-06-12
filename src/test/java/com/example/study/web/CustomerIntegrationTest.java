@@ -2,6 +2,8 @@ package com.example.study.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.jayway.jsonassert.JsonAssert.with;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -26,6 +29,15 @@ public class CustomerIntegrationTest {
     @Autowired
     TestRestTemplate restTemplate;
 
+    @Autowired
+    Flyway flyway;
+
+    @BeforeEach
+    public void setUp(){
+        flyway.clean();
+        flyway.migrate();
+    }
+	
     /**
      * Test findCustomer
      * Case: OK
@@ -66,10 +78,9 @@ public class CustomerIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         String customerCode = randomCode();
         RegisterCustomerRequest registerCustomerRequest = RegisterCustomerRequestFixtures.create(customerCode);
-        registerCustomerRequest.setRollbackFlag(true);
         // exercise
         ResponseEntity<String> actual = restTemplate
-                .exchange("/customer", HttpMethod.POST, new HttpEntity<>(registerCustomerRequest, headers), String.class);
+                .exchange("/customer?rollbackFlag=true", HttpMethod.POST, new HttpEntity<>(registerCustomerRequest, headers), String.class);
 
         // verify
         log.info("POST Customer response = {}", actual);
@@ -107,6 +118,30 @@ public class CustomerIntegrationTest {
                 .assertThat("$.sex", is("Male"))
                 .assertThat("$.age", is(24))
                 .assertThat("$.address", is("Address"));
+    }
+
+    /**
+     * Test findCustomer
+     * Case: OK
+     */
+    @Test
+    public void testFindListCustomer() {
+        // setup
+        HttpHeaders headers = new HttpHeaders();
+        String customerCode1 = createCustomer(headers);
+        String customerCode2 = createCustomer(headers);
+        String customerCode3 = createCustomer(headers);
+        // exercise
+        ResponseEntity<String> actual = restTemplate
+                .exchange("/customer", HttpMethod.GET, new HttpEntity<>(headers), String.class);
+        // verify
+        log.info("GET Customer response = {}", actual);
+        assertThat(actual.getStatusCode(), is(HttpStatus.OK));
+        with(actual.getBody())
+                .assertThat("$", hasSize(3))
+                .assertThat("$[0].customer_code", is(customerCode1))
+                .assertThat("$[1].customer_code", is(customerCode2))
+                .assertThat("$[2].customer_code", is(customerCode3));
     }
 
     /**
@@ -207,7 +242,7 @@ public class CustomerIntegrationTest {
      *    Throw 400
      */
     @Test
-    public void testDeleteCustomer_ThrowsIAE() {
+    public void testDeleteCustomer_rollback() {
         // setup
         HttpHeaders headers = new HttpHeaders();
         String customerCode = createCustomer(headers);
@@ -230,6 +265,157 @@ public class CustomerIntegrationTest {
         assertThat(actual.getStatusCode(), is(HttpStatus.OK));
         with(actual.getBody())
                 .assertThat("$.customer_code", is(customerCode));
+    }
+
+    /**
+     * Test findCustomer
+     * Case: create Customer
+     * Input:
+     *    Put with not exist customer code
+     * Output:
+     *    create success
+     */
+    @Test
+    public void testUpsertCustomer_createCustomer() {
+        // setup
+        HttpHeaders headers = new HttpHeaders();
+        String customerCode = randomCode();
+        RegisterCustomerRequest registerCustomerRequest = RegisterCustomerRequestFixtures.create(customerCode);
+
+        // exercise
+        ResponseEntity<String> actual = restTemplate
+                .exchange("/customer/{customerCode}", HttpMethod.PUT, new HttpEntity<>(registerCustomerRequest, headers), String.class, customerCode);
+
+        // verify
+        log.info("POST Customer response = {}", actual);
+        assertThat(actual.getStatusCode(), is(HttpStatus.OK));
+        with(actual.getBody())
+                .assertThat("$.customer_code", is(customerCode))
+                .assertThat("$.customer_name", is(registerCustomerRequest.getCustomerName()))
+                .assertThat("$.sex", is(registerCustomerRequest.getSex()))
+                .assertThat("$.age", is(registerCustomerRequest.getAge().intValue()))
+                .assertThat("$.address", is(registerCustomerRequest.getAddress()));
+
+        actual = restTemplate
+                .exchange("/customer/" + customerCode, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+        // verify
+        log.info("GET Customer response = {}", actual);
+        assertThat(actual.getStatusCode(), is(HttpStatus.OK));
+        with(actual.getBody())
+                .assertThat("$.customer_code", is(customerCode));
+    }
+
+    /**
+     * Test findCustomer
+     * Case: update Customer
+     * Input:
+     *    Put with existed customer code
+     * Output:
+     *    create success
+     */
+    @Test
+    public void testUpsertCustomer_updateCustomer() {
+        // setup
+        HttpHeaders headers = new HttpHeaders();
+        String customerCode = createCustomer(headers);
+
+        // verify
+        ResponseEntity<String> actual = restTemplate
+                .exchange("/customer/" + customerCode, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+        // verify
+        log.info("GET Customer response = {}", actual);
+        assertThat(actual.getStatusCode(), is(HttpStatus.OK));
+        with(actual.getBody())
+                .assertThat("$.customer_code", is(customerCode))
+                .assertThat("$.customer_name", is("CustomerName"))
+                .assertThat("$.sex", is("Male"))
+                .assertThat("$.age", is(24))
+                .assertThat("$.address", is("Address"));
+
+        // update
+        RegisterCustomerRequest updateRequest = RegisterCustomerRequestFixtures.create(customerCode);
+        updateRequest.setCustomerName("updatedName");
+        updateRequest.setSex("Female");
+        updateRequest.setAge(25L);
+        updateRequest.setAddress("updatedAddress");
+        // exercise
+        actual = restTemplate
+                .exchange("/customer/{customerCode}", HttpMethod.PUT, new HttpEntity<>(updateRequest, headers), String.class, customerCode);
+
+        // verify
+        log.info("POST Customer response = {}", actual);
+        assertThat(actual.getStatusCode(), is(HttpStatus.OK));
+        with(actual.getBody())
+                .assertThat("$.customer_code", is(customerCode))
+                .assertThat("$.customer_name", is(updateRequest.getCustomerName()))
+                .assertThat("$.sex", is(updateRequest.getSex()))
+                .assertThat("$.age", is(updateRequest.getAge().intValue()))
+                .assertThat("$.address", is(updateRequest.getAddress()));
+
+        actual = restTemplate
+                .exchange("/customer/" + customerCode, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+        // verify
+        log.info("GET Customer response = {}", actual);
+        assertThat(actual.getStatusCode(), is(HttpStatus.OK));
+        with(actual.getBody())
+                .assertThat("$.customer_code", is(customerCode))
+                .assertThat("$.customer_name", is(updateRequest.getCustomerName()))
+                .assertThat("$.sex", is(updateRequest.getSex()))
+                .assertThat("$.age", is(updateRequest.getAge().intValue()))
+                .assertThat("$.address", is(updateRequest.getAddress()));
+    }
+
+    /**
+     * Test findCustomer
+     * Case: rollback
+     */
+    @Test
+    public void testUpsertCustomer_rollback() {
+        // setup
+        HttpHeaders headers = new HttpHeaders();
+        String customerCode = createCustomer(headers);
+
+        // verify
+        ResponseEntity<String> actual = restTemplate
+                .exchange("/customer/" + customerCode, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+        // verify
+        log.info("GET Customer response = {}", actual);
+        assertThat(actual.getStatusCode(), is(HttpStatus.OK));
+        with(actual.getBody())
+                .assertThat("$.customer_code", is(customerCode))
+                .assertThat("$.customer_name", is("CustomerName"))
+                .assertThat("$.sex", is("Male"))
+                .assertThat("$.age", is(24))
+                .assertThat("$.address", is("Address"));
+
+        // update
+        RegisterCustomerRequest updateRequest = RegisterCustomerRequestFixtures.create(customerCode);
+        updateRequest.setCustomerName("updatedName");
+        updateRequest.setSex("Female");
+        updateRequest.setAge(25L);
+        updateRequest.setAddress("updatedAddress");
+        // exercise
+        actual = restTemplate
+                .exchange("/customer/{customerCode}?rollbackFlag=true", HttpMethod.PUT, new HttpEntity<>(updateRequest, headers), String.class, customerCode);
+
+        // verify
+        log.info("POST Customer response = {}", actual);
+        assertThat(actual.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        with(actual.getBody())
+                .assertThat("$.status", is(400))
+                .assertThat("$.error", is("Bad Request"));
+
+        actual = restTemplate
+                .exchange("/customer/" + customerCode, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+        // verify
+        log.info("GET Customer response = {}", actual);
+        assertThat(actual.getStatusCode(), is(HttpStatus.OK));
+        with(actual.getBody())
+                .assertThat("$.customer_code", is(customerCode))
+                .assertThat("$.customer_name", is("CustomerName"))
+                .assertThat("$.sex", is("Male"))
+                .assertThat("$.age", is(24))
+                .assertThat("$.address", is("Address"));
     }
 
     private String createCustomer(HttpHeaders headers) {

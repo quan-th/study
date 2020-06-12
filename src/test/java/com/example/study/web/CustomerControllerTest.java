@@ -118,7 +118,7 @@ class CustomerControllerTest {
         // setup
         RegisterCustomerRequest request = RegisterCustomerRequestFixtures.create("customerCode");
         Customer customer = request.get();
-        when(customerService.findCustomer(any())).thenReturn(customer);
+        when(customerService.findCustomer(anyString())).thenReturn(customer);
 
         // exercise
         this.mvc.perform(get("/customer/customerCode"))
@@ -131,7 +131,7 @@ class CustomerControllerTest {
     @Test
     public void testFindCustomer_throwNFE() throws Exception {
         // setup
-        when(customerService.findCustomer(any())).thenReturn(null);
+        when(customerService.findCustomer(anyString())).thenReturn(null);
 
         // exercise
         this.mvc.perform(get("/customer/customerCode"))

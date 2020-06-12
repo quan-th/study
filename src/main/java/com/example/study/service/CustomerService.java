@@ -40,7 +40,7 @@ public class CustomerService {
             customerToUpdate.setCustomerId(customer.getCustomerId());
         }
         validator.validate(customerToUpdate);
-        customerRepositoryCustom.create(customerToUpdate);
+        customerRepositoryCustom.upsert(customer, customerToUpdate);
         if(rollbackFlag){
             IllegalArgumentException e = new IllegalArgumentException("Test Rollback");
             log.error("Rollback transaction");
@@ -52,6 +52,11 @@ public class CustomerService {
     @Transactional(readOnly = true)
     public Customer findCustomer(String customerCode){
         return customerRepositoryCustom.findCustomer(customerCode);
+    }
+
+    @Transactional(readOnly = true)
+    public Iterable<Customer> findCustomer(){
+        return customerRepositoryCustom.findCustomer();
     }
 
     @Transactional

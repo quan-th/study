@@ -5,5 +5,6 @@ create table customer
   customer_name VARCHAR(128),
   sex VARCHAR(10),
   age int,
-  address VARCHAR(10)
+  address VARCHAR(128),
+  UNIQUE INDEX customer_code (customer_code)
 );

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,16 +25,18 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/customer")
 @AllArgsConstructor
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class CustomerController {
     @Autowired
     CustomerService customerService;
 
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> registerCustomer(@Validated @RequestBody RegisterCustomerRequest request) {
+    public ResponseEntity<?> registerCustomer(@Validated @RequestBody RegisterCustomerRequest request
+    ,@RequestParam(name = "rollbackFlag", required = false) boolean rollbackFlag) {
         try {
             Customer customer = request.get();
-            Customer cart = customerService.create(customer, request.isRollbackFlag());
+            Customer cart = customerService.create(customer, rollbackFlag);
             return ResponseEntity.ok(cart);
         } catch (IllegalArgumentException | ValidationException e) {
             throw new HttpBadRequestException(e.getMessage());
@@ -46,6 +49,13 @@ public class CustomerController {
     public ResponseEntity<?> findCustomer(@PathVariable String customerCode) {
         Customer customer = Optional.ofNullable(customerService.findCustomer(customerCode))
                 .orElseThrow(() -> new HttpNotFoundException("Cannot find customer" + customerCode));
+        return ResponseEntity.ok(customer);
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<?> findCustomer() {
+        Iterable<Customer> customer = Optional.ofNullable(customerService.findCustomer())
+                .orElseThrow(() -> new HttpNotFoundException("Cannot find customer"));
         return ResponseEntity.ok(customer);
     }
 
@@ -66,10 +76,11 @@ public class CustomerController {
 
     @RequestMapping(value = "/{customerCode}", method = RequestMethod.PUT)
     public ResponseEntity<?> upsertCustomer(@Validated @RequestBody RegisterCustomerRequest request,
-                                            @PathVariable(name = "customerCode") String customerCode) {
+                                            @PathVariable(name = "customerCode") String customerCode,
+                                            @RequestParam(name = "rollbackFlag", required = false) boolean rollbackFlag) {
         try {
             Customer customer = request.get();
-            Customer cart = customerService.upsert(customerCode, customer, request.isRollbackFlag());
+            Customer cart = customerService.upsert(customerCode, customer, rollbackFlag);
             return ResponseEntity.ok(cart);
         } catch (IllegalArgumentException | ValidationException e) {
             throw new HttpBadRequestException(e.getMessage());
