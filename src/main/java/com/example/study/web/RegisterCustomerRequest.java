@@ -1,6 +1,5 @@
 package com.example.study.web;
 
-import com.example.study.common.CommonTimestamp;
 import com.example.study.service.Customer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -34,7 +33,6 @@ public class RegisterCustomerRequest {
         customer.setSex(this.sex);
         customer.setAge(this.age);
         customer.setAddress(this.address);
-        customer.setRegisterTimestamp(CommonTimestamp.currentTimestamp());
         return customer;
     }
 }
