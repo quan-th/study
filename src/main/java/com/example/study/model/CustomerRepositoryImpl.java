@@ -1,4 +1,4 @@
-package com.example.study.service;
+package com.example.study.model;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +7,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -31,6 +33,10 @@ public class CustomerRepositoryImpl implements CustomerRepositoryCustom{
             log.error("save failed!");
             throw e;
         }
+    }
+
+    public long count(){
+        return customerRepository.numbersOfCustomer();
     }
 
     public void upsert(Customer customer, Customer customerToUpdate){
@@ -58,8 +64,8 @@ public class CustomerRepositoryImpl implements CustomerRepositoryCustom{
         }
     }
 	
-    public Iterable<Customer> findCustomer(){
-        return customerRepository.findAll();
+    public Page<Customer> findCustomer(Pageable pageable){
+        return customerRepository.findAll(pageable);
     }
 
 }

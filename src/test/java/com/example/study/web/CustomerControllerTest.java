@@ -1,8 +1,8 @@
 package com.example.study.web;
 
 import com.example.study.exception.NotFoundException;
-import com.example.study.service.Customer;
-import com.example.study.service.CustomerService;
+import com.example.study.model.Customer;
+import com.example.study.model.CustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.HibernateException;
 import org.junit.jupiter.api.BeforeEach;

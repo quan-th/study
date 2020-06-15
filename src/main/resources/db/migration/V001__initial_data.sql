@@ -6,5 +6,6 @@ create table customer
   sex VARCHAR(10),
   age int,
   address VARCHAR(128),
+  register_timestamp BIGINT(11),
   UNIQUE INDEX customer_code (customer_code)
 );

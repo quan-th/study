@@ -4,11 +4,13 @@ import com.example.study.exception.HttpBadRequestException;
 import com.example.study.exception.HttpConflictException;
 import com.example.study.exception.HttpNotFoundException;
 import com.example.study.exception.NotFoundException;
-import com.example.study.service.Customer;
-import com.example.study.service.CustomerService;
+import com.example.study.model.Customer;
+import com.example.study.model.CustomerService;
 import lombok.AllArgsConstructor;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.ValidationException;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -53,10 +56,17 @@ public class CustomerController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<?> findCustomer() {
-        Iterable<Customer> customer = Optional.ofNullable(customerService.findCustomer())
-                .orElseThrow(() -> new HttpNotFoundException("Cannot find customer"));
-        return ResponseEntity.ok(customer);
+    public ResponseEntity<?> findCustomer(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                          @RequestParam(name = "size", required = false, defaultValue = "100") int size) {
+
+        try {
+            Map<String, Object> result = customerService
+                    .findCustomer(PageRequest.of(page, size, Sort.by("registerTimestamp")));
+            result.put("current_page", page);
+        return ResponseEntity.ok(result);
+    }catch (NotFoundException e){
+            throw new HttpNotFoundException("Cannot find customer");
+        }
     }
 
     @RequestMapping(value = "/{customerCode}", method = RequestMethod.DELETE)

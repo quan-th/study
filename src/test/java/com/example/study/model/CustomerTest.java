@@ -1,4 +1,4 @@
-package com.example.study.service;
+package com.example.study.model;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;

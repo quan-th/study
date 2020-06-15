@@ -1,13 +1,17 @@
-package com.example.study.service;
+package com.example.study.model;
 
 import com.example.study.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Validator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -55,8 +59,18 @@ public class CustomerService {
     }
 
     @Transactional(readOnly = true)
-    public Iterable<Customer> findCustomer(){
-        return customerRepositoryCustom.findCustomer();
+    public Map<String, Object> findCustomer(Pageable pageable){
+        long totalPage = customerRepositoryCustom.count();
+        long quotient = totalPage / pageable.getPageSize();
+        long lastPage = totalPage % pageable.getPageSize() == 0 ?
+                quotient : quotient+1;
+        Map<String, Object> data = new HashMap<>();
+        List<Customer> customerList = Optional.ofNullable(customerRepositoryCustom.findCustomer(pageable)).
+                orElseThrow(() -> new NotFoundException("Cannot find customer"))
+                .getContent();
+        data.put("customers", customerList);
+        data.put("last_page", lastPage-1);
+        return data;
     }
 
     @Transactional
