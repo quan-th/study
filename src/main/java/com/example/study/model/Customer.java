@@ -1,4 +1,4 @@
-package com.example.study.service;
+package com.example.study.model;
 
 import com.example.study.common.CommonTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;

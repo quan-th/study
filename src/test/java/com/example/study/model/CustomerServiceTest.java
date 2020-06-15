@@ -1,4 +1,4 @@
-package com.example.study.service;
+package com.example.study.model;
 
 import com.example.study.exception.NotFoundException;
 import org.hibernate.HibernateException;

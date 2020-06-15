@@ -1,4 +1,4 @@
-package com.example.study.service;
+package com.example.study.model;
 
 public interface CustomerRepositoryCustom {
 

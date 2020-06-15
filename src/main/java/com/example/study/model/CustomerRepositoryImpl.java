@@ -1,4 +1,4 @@
-package com.example.study.service;
+package com.example.study.model;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +33,10 @@ public class CustomerRepositoryImpl implements CustomerRepositoryCustom{
             log.error("save failed!");
             throw e;
         }
+    }
+
+    public long count(){
+        return customerRepository.numbersOfCustomer();
     }
 
     public void upsert(Customer customer, Customer customerToUpdate){

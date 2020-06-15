@@ -1,6 +1,5 @@
-package com.example.study.service;
+package com.example.study.model;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 public class CustomerFixtures {

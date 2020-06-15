@@ -144,12 +144,14 @@ public class CustomerIntegrationTest {
         log.info("GET Customer response = {}", actual);
         assertThat(actual.getStatusCode(), is(HttpStatus.OK));
         with(actual.getBody())
-                .assertThat("$", hasSize(5))
-                .assertThat("$[0].customer_code", is(customerCode1))
-                .assertThat("$[1].customer_code", is(customerCode2))
-                .assertThat("$[2].customer_code", is(customerCode3))
-                .assertThat("$[3].customer_code", is(customerCode4))
-                .assertThat("$[4].customer_code", is(customerCode5));
+                .assertThat("$.customers", hasSize(5))
+                .assertThat("$.customers[0].customer_code", is(customerCode1))
+                .assertThat("$.customers[1].customer_code", is(customerCode2))
+                .assertThat("$.customers[2].customer_code", is(customerCode3))
+                .assertThat("$.customers[3].customer_code", is(customerCode4))
+                .assertThat("$.customers[4].customer_code", is(customerCode5))
+                .assertThat("$.current_page", is(0))
+                .assertThat("$.last_page", is(1));
 
         actual = restTemplate
                 .exchange("/customer?size=5&page=1", HttpMethod.GET, new HttpEntity<>(headers), String.class);
@@ -157,11 +159,13 @@ public class CustomerIntegrationTest {
         log.info("GET Customer response = {}", actual);
         assertThat(actual.getStatusCode(), is(HttpStatus.OK));
         with(actual.getBody())
-                .assertThat("$", hasSize(4))
-                .assertThat("$[0].customer_code", is(customerCode6))
-                .assertThat("$[1].customer_code", is(customerCode7))
-                .assertThat("$[2].customer_code", is(customerCode8))
-                .assertThat("$[3].customer_code", is(customerCode9));
+                .assertThat("$.customers", hasSize(4))
+                .assertThat("$.customers[0].customer_code", is(customerCode6))
+                .assertThat("$.customers[1].customer_code", is(customerCode7))
+                .assertThat("$.customers[2].customer_code", is(customerCode8))
+                .assertThat("$.customers[3].customer_code", is(customerCode9))
+                .assertThat("$.current_page", is(1))
+                .assertThat("$.last_page", is(1));
 
         actual = restTemplate
                 .exchange("/customer", HttpMethod.GET, new HttpEntity<>(headers), String.class);
@@ -169,16 +173,18 @@ public class CustomerIntegrationTest {
         log.info("GET Customer response = {}", actual);
         assertThat(actual.getStatusCode(), is(HttpStatus.OK));
         with(actual.getBody())
-                .assertThat("$", hasSize(9))
-                .assertThat("$[0].customer_code", is(customerCode1))
-                .assertThat("$[1].customer_code", is(customerCode2))
-                .assertThat("$[2].customer_code", is(customerCode3))
-                .assertThat("$[3].customer_code", is(customerCode4))
-                .assertThat("$[4].customer_code", is(customerCode5))
-                .assertThat("$[5].customer_code", is(customerCode6))
-                .assertThat("$[6].customer_code", is(customerCode7))
-                .assertThat("$[7].customer_code", is(customerCode8))
-                .assertThat("$[8].customer_code", is(customerCode9));
+                .assertThat("$.customers", hasSize(9))
+                .assertThat("$.customers[0].customer_code", is(customerCode1))
+                .assertThat("$.customers[1].customer_code", is(customerCode2))
+                .assertThat("$.customers[2].customer_code", is(customerCode3))
+                .assertThat("$.customers[3].customer_code", is(customerCode4))
+                .assertThat("$.customers[4].customer_code", is(customerCode5))
+                .assertThat("$.customers[5].customer_code", is(customerCode6))
+                .assertThat("$.customers[6].customer_code", is(customerCode7))
+                .assertThat("$.customers[7].customer_code", is(customerCode8))
+                .assertThat("$.customers[8].customer_code", is(customerCode9))
+                .assertThat("$.current_page", is(0))
+                .assertThat("$.last_page", is(0));
     }
 
     /**
@@ -196,7 +202,7 @@ public class CustomerIntegrationTest {
         log.info("GET Customer response = {}", actual);
         assertThat(actual.getStatusCode(), is(HttpStatus.OK));
         with(actual.getBody())
-                .assertThat("$", hasSize(0));
+                .assertThat("$.customers", hasSize(0));
     }
 
     /**
