@@ -34,7 +34,6 @@ public class RegisterCustomerRequest {
         customer.setSex(this.sex);
         customer.setAge(this.age);
         customer.setAddress(this.address);
-        customer.setRegisterTimestamp(CommonTimestamp.currentTimestamp());
         return customer;
     }
 }
